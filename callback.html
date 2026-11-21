@@ -1,0 +1,32 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="referrer" content="no-referrer"><meta name="robots" content="noindex">
+<title>TikTok sign-in — KGVerse AutoClipper</title><link rel="stylesheet" href="style.css"></head><body><main>
+<h1>TikTok sign-in</h1>
+<div class="card" id="box"><p id="msg" class="muted">Reading the sign-in result…</p>
+<p><a id="send" class="btn" href="#" style="display:none">Send to my KGVerse app</a></p>
+<p id="fallback" class="muted" style="display:none">If the button doesn't open your app, copy this page's full address
+(⌘L then ⌘C) and paste it into <b>Accounts → TikTok → Paste sign-in result</b> in KGVerse AutoClipper.</p></div>
+<p class="muted">This page never stores or sends your sign-in code anywhere. It only hands it to the KGVerse app running on
+<b>your own computer</b> (http://127.0.0.1:5056).</p>
+<script>
+(function () {
+  var q = new URLSearchParams(window.location.search);
+  var msg = document.getElementById("msg"), send = document.getElementById("send"), fb = document.getElementById("fallback");
+  var LOCAL = "http://127.0.0.1:5056/oauth/tiktok/callback";
+  var keep = ["code", "state", "scopes", "error", "error_description"];
+  var out = new URLSearchParams();
+  keep.forEach(function (k) { if (q.get(k)) out.set(k, q.get(k)); });
+  if (q.get("error")) {
+    msg.textContent = "TikTok did not authorize the app: " + (q.get("error_description") || q.get("error")) +
+      ". You can send this result to your app so it shows the reason.";
+  } else if (q.get("code") && q.get("state")) {
+    msg.textContent = "TikTok approved the sign-in. Press the button to finish connecting in your KGVerse app.";
+  } else {
+    msg.textContent = "No sign-in result on this page. Start from Accounts → TikTok → Connect TikTok in your KGVerse app.";
+    return;
+  }
+  send.href = LOCAL + "?" + out.toString();
+  send.style.display = "inline-block";
+  fb.style.display = "block";
+})();
+</script></main></body></html>
